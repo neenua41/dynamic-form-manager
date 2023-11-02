@@ -17,17 +17,14 @@ use Illuminate\Support\Facades\Auth;
 Auth::routes();
 
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
 Route::prefix('admin')->middleware('auth')->group(function () {
-    Route::resource('forms', App\Http\Controllers\AdminController::class)
-        ->except(['show'])
-        ->names([
-            'create' => 'admin.form.create',
-            'store' => 'admin.store.form',
-            'index' => 'admin.index',
-            'edit' => 'admin.form.edit',
-            'update' => 'admin.form.update',
-            'destroy' => 'admin.form.destroy',
-        ]);
+    Route::get('/forms', [App\Http\Controllers\AdminController::class, 'create'])->name('admin.form.create');
+    Route::post('/store-form', [App\Http\Controllers\AdminController::class, 'storeForm'])->name('admin.store.form');
+    Route::get('/index', [App\Http\Controllers\AdminController::class, 'index'])->name('admin.index');
+    Route::get('/forms/{form}/edit', [App\Http\Controllers\AdminController::class, 'edit'])->name('admin.form.edit');
+    Route::delete('/forms/{form}', [App\Http\Controllers\AdminController::class, 'destroy'])->name('admin.form.destroy');
+    Route::put('/forms/{form}', [App\Http\Controllers\AdminController::class, 'update'])->name('admin.form.update');
 });
 Route::get('/forms', [App\Http\Controllers\PublicFormController::class, 'showForm'])->name('public.forms.index');
 Route::post('/forms/{form}', [App\Http\Controllers\PublicFormController::class, 'storeResponse'])->name('public.forms.storeResponse');
